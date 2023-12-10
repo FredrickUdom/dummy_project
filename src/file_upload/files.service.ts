@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { createReadStream } from 'node:fs';
 import { Response } from 'express';
 import { join } from 'path';
@@ -32,5 +32,7 @@ export class FileService {
       throw new Error(`Error reading directory: ${error.message}`);
     }
   }
+
+
 }
 

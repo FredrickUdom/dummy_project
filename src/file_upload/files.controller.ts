@@ -1,7 +1,9 @@
-import { Controller, Post, UseInterceptors, UploadedFile, Get, Param, Res } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { Controller, Post, UseInterceptors, UploadedFile, Get, Param, Res, HttpException, FileTypeValidator, MaxFileSizeValidator, ParseFilePipe, UploadedFiles } from '@nestjs/common';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { FileService } from './files.service';
+import { imageFileFilter } from './file.util';
+
 
 @Controller('upload')
 export class FilesController {
@@ -13,9 +15,17 @@ export class FilesController {
   }
 
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
-  async create(@UploadedFile() file: Express.Multer.File) {
-    const image = await this.fileService.uploadFile(file);
+  @UseInterceptors(FilesInterceptor('file', 3,{
+    fileFilter:imageFileFilter
+  }))
+  async create(@UploadedFiles() file: Express.Multer.File) {
+ 
+   const image = await this.fileService.uploadFile(file);
     return { image };
   }
+
+
 }
+// {
+//   fileFilter:imageFileFilter,
+// }
